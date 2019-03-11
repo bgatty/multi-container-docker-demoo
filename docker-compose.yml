@@ -1,0 +1,68 @@
+ version: '3'
+ services:
+  #Get the latest image for Postgres
+  postgres:
+    image: 'postgres:latest'
+  #Get the latest image for Redis
+  redis:
+    image: 'redis:latest'
+
+
+  #Setting up the services for nginx
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3050:80'
+    
+
+    
+  #Setting up the services for our server section(called api here to satisy nginx requirements) of the application
+  api:
+    #specify the build option
+    build:
+      #specify the name of the dockerfile
+      dockerfile: Dockerfile.dev
+      #context is used to specify the docker file path 
+      context: ./server
+    volumes: 
+      #Inside the container, dont try to over ride this particular node_modules folder. Leave that folder as is
+      - /app/node_modules
+      #Look at the server directory and copy everything inside it to the app folder inside the container except for the node_modules folder
+      #If you make any little changes to our source code inside the server folder, it will reflect inside the container
+      - ./server:/app
+    environment: 
+      # - specifies an array
+      - REDIST_HOST=redis
+      #Default port as specified in Redis documentation
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      #Default port speficied in PostGres documentation
+      - PGPORT=5432
+
+ #Setting up the services for our client section of the application 
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes: 
+      - /app/node_modules
+      - ./client:/app
+  #Setting up the services for our worker section of the application 
+  worker:
+    environment: 
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes: 
+      - /app/node_modules
+      - ./worker:/app
+
+    
