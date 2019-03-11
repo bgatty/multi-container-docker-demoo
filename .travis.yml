@@ -15,7 +15,7 @@ after_success:
   - docker build -t bgatty/multi-nginx ./nginx
   - docker build -t bgatty/multi-server ./server
   - docker build -t bgatty/multi-worker ./worker
-#login to the docker cli using parameters defined in Travis repo settings
+#login to the docker cli using parameters defined in Travis repo setting
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 #push images to docker hub
 
