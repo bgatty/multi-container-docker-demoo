@@ -3,13 +3,13 @@ services:
   - docker
 
 #build image to run tests
-#before_install:
- # - docker build -t bgatty/react-test -f ./client/Dockerfile.dev ./client
+before_install:
+  - docker build -t bgatty/react-test -f ./client/Dockerfile.dev ./client
 
 #run tests 
 #script:
  # - docker run bgatty/react-test npm test -- --coverage
- 
+
 # build production images
 after_success:
   - docker build -t bgatty/multi-client ./client
