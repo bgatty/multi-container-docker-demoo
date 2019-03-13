@@ -35,7 +35,7 @@
       - ./server:/app
     environment: 
       # - specifies an array
-      - REDIST_HOST=redis
+      - REDIS_HOST=redis
       #Default port as specified in Redis documentation
       - REDIS_PORT=6379
       - PGUSER=postgres
